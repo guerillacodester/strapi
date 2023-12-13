@@ -8718,7 +8718,6 @@ __metadata:
     "@koa/cors": "npm:3.4.3"
     "@koa/router": "npm:10.1.1"
     "@paralleldrive/cuid2": "npm:2.2.2"
-    "@strapi/admin": "npm:4.15.5"
     "@strapi/data-transfer": "npm:4.15.5"
     "@strapi/database": "npm:4.15.5"
     "@strapi/generate-new": "npm:4.15.5"
@@ -8726,10 +8725,6 @@ __metadata:
     "@strapi/logger": "npm:4.15.5"
     "@strapi/pack-up": "workspace:*"
     "@strapi/permissions": "npm:4.15.5"
-    "@strapi/plugin-content-manager": "npm:4.15.5"
-    "@strapi/plugin-content-type-builder": "npm:4.15.5"
-    "@strapi/plugin-email": "npm:4.15.5"
-    "@strapi/plugin-upload": "npm:4.15.5"
     "@strapi/ts-zen": "npm:^0.2.0"
     "@strapi/types": "npm:4.15.5"
     "@strapi/typescript-utils": "npm:4.15.5"
@@ -8790,6 +8785,8 @@ __metadata:
     typescript: "npm:5.2.2"
     undici: "npm:5.27.2"
     yup: "npm:0.32.9"
+  peerDependencies:
+    "@strapi/admin": 4.15.5
   languageName: unknown
   linkType: soft
 

@@ -26,6 +26,7 @@ interface PluginDeclaration {
   isModule: boolean;
 }
 
+// TODO: v5 Inject those from @strapi/strapi
 const INTERNAL_PLUGINS = [
   '@strapi/plugin-content-manager',
   '@strapi/plugin-content-type-builder',
