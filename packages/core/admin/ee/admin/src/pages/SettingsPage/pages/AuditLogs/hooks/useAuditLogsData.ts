@@ -1,8 +1,10 @@
+import * as React from 'react';
+
 import { useFetchClient, useNotification, useQueryParams } from '@strapi/helper-plugin';
 import { useQuery } from 'react-query';
 import { useLocation } from 'react-router-dom';
 
-import { useAdminUsers } from '../../../../../../../../admin/src/hooks/useAdminUsers';
+import { useAdminUsers } from '../../../../../../../../admin/src/services/users';
 import { GetAll } from '../../../../../../../../shared/contracts/audit-logs';
 
 export const useAuditLogsData = ({
@@ -25,17 +27,23 @@ export const useAuditLogsData = ({
   };
 
   const {
-    users,
+    data,
+    error,
     isError: isUsersError,
     isLoading: isLoadingUsers,
   } = useAdminUsers(
     {},
     {
-      ...queryOptions,
-      enabled: canReadUsers,
-      staleTime: 2 * (1000 * 60), // 2 minutes
+      skip: !canReadUsers,
+      refetchOnMountOrArgChange: true,
     }
   );
+
+  React.useEffect(() => {
+    if (error) {
+      toggleNotification({ type: 'warning', message: error.message });
+    }
+  }, [error, toggleNotification]);
 
   const {
     data: auditLogs,
@@ -58,7 +66,7 @@ export const useAuditLogsData = ({
 
   return {
     auditLogs,
-    users,
+    users: data?.users ?? [],
     isLoading: isLoadingUsers || isLoadingAuditLogs,
     hasError: isAuditLogsError || isUsersError,
   };

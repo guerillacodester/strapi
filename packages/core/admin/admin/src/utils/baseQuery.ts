@@ -13,14 +13,14 @@ export interface QueryArguments {
   config?: AxiosRequestConfig;
 }
 
-interface UnknownApiError {
+export interface UnknownApiError {
   name: 'UnknownError';
   message: string;
   details?: unknown;
   status?: number;
 }
 
-type BaseQueryError = ApiError | UnknownApiError;
+export type BaseQueryError = ApiError | UnknownApiError;
 
 const axiosBaseQuery =
   (): BaseQueryFn<QueryArguments, unknown, BaseQueryError> =>

@@ -115,7 +115,7 @@ export const SingleSignOnPage = () => {
   });
 
   const { roles, isLoading: isLoadingRoles } = useAdminRoles(undefined, {
-    enabled: canReadRoles,
+    skip: !canReadRoles,
   });
 
   const handleSubmit = async (

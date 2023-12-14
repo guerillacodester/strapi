@@ -7,10 +7,9 @@ import {
   type RegistrationInfo,
   ForgotPassword,
 } from '../../../shared/contracts/authentication';
+import { type GetOwnPermissions, type GetMe, type UpdateMe } from '../../../shared/contracts/users';
 
-import { adminApi } from './admin';
-
-import type { GetMe, UpdateMe } from '../../../shared/contracts/users';
+import { adminApi } from './api';
 
 const authService = adminApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -26,6 +25,15 @@ const authService = adminApi.injectEndpoints({
         return res.data;
       },
       providesTags: (res) => (res ? ['Me', { type: 'User', id: res.id }] : ['Me']),
+    }),
+    getMyPermissions: builder.query<GetOwnPermissions.Response['data'], void>({
+      query: () => ({
+        method: 'GET',
+        url: '/admin/users/me/permissions',
+      }),
+      transformResponse(res: GetOwnPermissions.Response) {
+        return res.data;
+      },
     }),
     updateMe: builder.mutation<UpdateMe.Response['data'], UpdateMe.Request['body']>({
       query: (body) => ({
@@ -138,6 +146,7 @@ const {
   useRegisterUserMutation,
   useGetRegistrationInfoQuery,
   useForgotPasswordMutation,
+  useGetMyPermissionsQuery,
 } = authService;
 
 export {
@@ -151,4 +160,5 @@ export {
   useRegisterUserMutation,
   useGetRegistrationInfoQuery,
   useForgotPasswordMutation,
+  useGetMyPermissionsQuery,
 };

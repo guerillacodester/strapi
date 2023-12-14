@@ -11,7 +11,7 @@ import { useMutation } from 'react-query';
 
 import { getDisplayName } from '../../../../../../../admin/src/content-manager/utils/users';
 import { useTypedSelector } from '../../../../../../../admin/src/core/store/hooks';
-import { useAdminUsers } from '../../../../../../../admin/src/hooks/useAdminUsers';
+import { useAdminUsers } from '../../../../../../../admin/src/services/users';
 
 import { ASSIGNEE_ATTRIBUTE_NAME } from './constants';
 
@@ -29,12 +29,14 @@ const AssigneeSelect = () => {
     allowedActions: { canRead },
     isLoading: isLoadingPermissions,
   } = useRBAC(permissions.settings?.users);
-  const { users, isLoading, isError } = useAdminUsers(
+  const { data, isLoading, isError } = useAdminUsers(
     {},
     {
-      enabled: !isLoadingPermissions && canRead,
+      skip: isLoadingPermissions || !canRead,
     }
   );
+
+  const users = data?.users || [];
 
   const currentAssignee = initialData?.[ASSIGNEE_ATTRIBUTE_NAME] ?? null;
 

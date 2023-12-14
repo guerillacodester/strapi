@@ -75,7 +75,7 @@ const EditPage = () => {
   } = useAdminRoles(
     { id },
     {
-      cacheTime: 0,
+      refetchOnMountOrArgChange: true,
     }
   );
 

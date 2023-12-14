@@ -78,9 +78,7 @@ export const ReviewWorkflowsEditPage = () => {
     hasReassignedContentTypes?: boolean;
   }>({});
   const { getFeature, isLoading: isLicenseLoading } = useLicenseLimits();
-  const { isLoading: isLoadingRoles, roles: serverRoles } = useAdminRoles(undefined, {
-    retry: false,
-  });
+  const { isLoading: isLoadingRoles, roles: serverRoles } = useAdminRoles(undefined);
   const [showLimitModal, setShowLimitModal] = React.useState<'workflow' | 'stage' | null>(null);
   const [initialErrors, setInitialErrors] = React.useState<FormikErrors<CurrentWorkflow>>();
 

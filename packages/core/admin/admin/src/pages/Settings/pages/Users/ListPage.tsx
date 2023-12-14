@@ -34,9 +34,9 @@ import { useLocation } from 'react-router-dom';
 
 import { SanitizedAdminUser } from '../../../../../../shared/contracts/shared';
 import { DeleteMany } from '../../../../../../shared/contracts/user';
-import { useAdminUsers } from '../../../../hooks/useAdminUsers';
 import { useEnterprise } from '../../../../hooks/useEnterprise';
 import { selectAdminPermissions } from '../../../../selectors';
+import { useAdminUsers } from '../../../../services/users';
 import { Filters } from '../../components/Filters';
 
 import { CreateActionCE } from './components/CreateActionCE';
@@ -63,15 +63,17 @@ const ListPageCE = () => {
   const { search } = useLocation();
   useFocusWhenNavigate();
   const {
-    users,
-    pagination,
+    data,
     isError,
     isLoading,
     refetch: refetchAdminUsers,
   } = useAdminUsers(qs.parse(search, { ignoreQueryPrefix: true }), {
-    cacheTime: 0,
-    enabled: canRead,
+    refetchOnMountOrArgChange: true,
+    skip: !canRead,
   });
+
+  const { pagination, users } = data ?? {};
+
   const CreateAction = useEnterprise(
     CreateActionCE,
     async () =>

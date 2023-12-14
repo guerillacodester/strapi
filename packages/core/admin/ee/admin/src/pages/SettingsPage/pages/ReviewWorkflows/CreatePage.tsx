@@ -59,9 +59,7 @@ export const ReviewWorkflowsCreatePage = () => {
   const toggleNotification = useNotification();
   const { collectionTypes, singleTypes, isLoading: isLoadingContentTypes } = useContentTypes();
   const { isLoading: isLoadingWorkflow, meta, workflows } = useReviewWorkflows();
-  const { isLoading: isLoadingRoles, roles: serverRoles } = useAdminRoles(undefined, {
-    retry: false,
-  });
+  const { isLoading: isLoadingRoles, roles: serverRoles } = useAdminRoles(undefined);
   const isLoading = useSelector(selectIsLoading);
   const currentWorkflowIsDirty = useSelector(selectIsWorkflowDirty);
   const currentWorkflow = useSelector(selectCurrentWorkflow);
