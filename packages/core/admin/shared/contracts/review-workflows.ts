@@ -1,26 +1,33 @@
 import { errors } from '@strapi/utils';
 import { Entity, Permission } from './shared';
+import { EntityService } from '@strapi/types';
+
+export interface StagePermission
+  extends Omit<Permission, 'createdAt' | 'updatedAt' | 'properties' | 'conditions'> {
+  role: number;
+}
 
 interface Stage extends Entity {
   color: string;
   name: string;
-  permissions: Permission[];
+  permissions?: StagePermission[];
 }
 
 interface Workflow extends Entity {
   name: string;
-  contentTypes: number[];
+  contentTypes: string[];
   stages: Stage[];
 }
 
 namespace GetAll {
   export interface Request {
     body: {};
-    query: {};
+    query: EntityService.Params.Pick<'admin::review-workflow', 'filters'>;
   }
 
   export interface Response {
     data: Workflow[];
+    meta?: { workflowCount: number };
     error?: errors.ApplicationError;
   }
 }

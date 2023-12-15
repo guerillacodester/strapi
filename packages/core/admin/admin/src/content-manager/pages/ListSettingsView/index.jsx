@@ -9,7 +9,13 @@ import {
   Layout,
   Main,
 } from '@strapi/design-system';
-import { Link, useFetchClient, useNotification, useTracking } from '@strapi/helper-plugin';
+import {
+  Link,
+  useFetchClient,
+  useNotification,
+  useQueryParams,
+  useTracking,
+} from '@strapi/helper-plugin';
 import { ArrowLeft, Check } from '@strapi/icons';
 import isEqual from 'lodash/isEqual';
 import upperFirst from 'lodash/upperFirst';
@@ -18,9 +24,9 @@ import { stringify } from 'qs';
 import { useIntl } from 'react-intl';
 import { useMutation } from 'react-query';
 
-import ModelsContext from '../../contexts/ModelsContext';
-import { usePluginsQueryParams } from '../../hooks';
-import { checkIfAttributeIsDisplayable, getTrad } from '../../utils';
+import { ModelsContext } from '../../contexts/models';
+import { checkIfAttributeIsDisplayable } from '../../utils/attributes';
+import { getTranslation } from '../../utils/translations';
 
 import { EditFieldForm } from './components/EditFieldForm';
 import { Settings } from './components/Settings';
@@ -32,7 +38,7 @@ export const ListSettingsView = ({ layout, slug }) => {
   const { put } = useFetchClient();
   const { formatMessage } = useIntl();
   const { trackUsage } = useTracking();
-  const pluginsQueryParams = usePluginsQueryParams();
+  const [{ query }] = useQueryParams();
   const toggleNotification = useNotification();
   const { refetchData } = React.useContext(ModelsContext);
   const [{ fieldToEdit, fieldForm, initialData, modifiedData }, dispatch] = React.useReducer(
@@ -49,25 +55,6 @@ export const ListSettingsView = ({ layout, slug }) => {
 
   const { attributes, options } = layout;
   const displayedFields = modifiedData.layouts.list;
-
-  const goBackUrl = () => {
-    const {
-      settings: { pageSize, defaultSortBy, defaultSortOrder },
-      kind,
-      uid,
-    } = initialData;
-    const sort = `${defaultSortBy}:${defaultSortOrder}`;
-    const goBackSearch = `${stringify(
-      {
-        page: 1,
-        pageSize,
-        sort,
-      },
-      { encode: false }
-    )}${pluginsQueryParams ? `&${pluginsQueryParams}` : ''}`;
-
-    return `/content-manager/${kind}/${uid}?${goBackSearch}`;
-  };
 
   const handleChange = ({ target: { name, value } }) => {
     dispatch({
@@ -106,7 +93,7 @@ export const ListSettingsView = ({ layout, slug }) => {
     if (displayedFields.length === 1) {
       toggleNotification({
         type: 'info',
-        message: { id: getTrad('notification.info.minimumFields') },
+        message: { id: getTranslation('notification.info.minimumFields') },
       });
     } else {
       dispatch({
@@ -182,13 +169,36 @@ export const ListSettingsView = ({ layout, slug }) => {
     });
   };
 
+  const {
+    settings: { pageSize, defaultSortBy, defaultSortOrder },
+    kind,
+    uid,
+  } = initialData;
+
   return (
     <Layout>
       <Main aria-busy={isSubmittingForm}>
         <form onSubmit={handleSubmit}>
           <HeaderLayout
             navigationAction={
-              <Link startIcon={<ArrowLeft />} to={goBackUrl} id="go-back">
+              <Link
+                startIcon={<ArrowLeft />}
+                to={{
+                  to: `/content-manager/${kind}/${uid}`,
+                  search: stringify(
+                    {
+                      page: 1,
+                      pageSize,
+                      sort: `${defaultSortBy}:${defaultSortOrder}`,
+                      plugins: query.plugins,
+                    },
+                    {
+                      encode: false,
+                    }
+                  ),
+                }}
+                id="go-back"
+              >
                 {formatMessage({ id: 'global.back', defaultMessage: 'Back' })}
               </Link>
             }
@@ -203,12 +213,14 @@ export const ListSettingsView = ({ layout, slug }) => {
               </Button>
             }
             subtitle={formatMessage({
-              id: getTrad('components.SettingsViewWrapper.pluginHeader.description.list-settings'),
+              id: getTranslation(
+                'components.SettingsViewWrapper.pluginHeader.description.list-settings'
+              ),
               defaultMessage: 'Define the settings of the list view.',
             })}
             title={formatMessage(
               {
-                id: getTrad('components.SettingsViewWrapper.pluginHeader.title'),
+                id: getTranslation('components.SettingsViewWrapper.pluginHeader.title'),
                 defaultMessage: 'Configure the view - {name}',
               },
               { name: upperFirst(modifiedData.info.displayName) }
